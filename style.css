@@ -1,0 +1,98 @@
+body.homepage {
+  background-color: #0d0d0d;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+body.homepage #menu {
+  margin-top: 100px;
+}
+
+body.homepage h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px #4af, 0 0 20px #4af;
+}
+
+body.homepage p {
+  font-size: 1.3rem;
+  margin-bottom: 30px;
+  color: #ccc;
+}
+
+body.homepage button {
+  background-color: #111;
+  color: white;
+  border: 2px solid #4af;
+  padding: 12px 25px;
+  margin: 10px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+body.homepage button:hover {
+  background-color: #4af;
+  color: black;
+  transform: scale(1.05);
+}
+
+#controls {
+  width: 200px;
+  position: absolute;
+  left: 20px;
+  top: 100px;
+  color: black;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+}
+
+
+body.cuboid-page {
+  background-color: #ffffff; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: black;
+}
+
+body.cuboid-page #controls {
+  width: 220px;
+  position: absolute;
+  left: 20px;
+  top: 80px;
+  padding: 15px;
+  background-color: rgba(240,240,240,0.9);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  font-size: 1rem;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin-bottom: 15px;
+  accent-color: #ff5500; 
+}
+
+p, label, span {
+  color: black;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-top: 20px;
+  text-align: left;
+  margin-left: 20px;
+}
+
+
+

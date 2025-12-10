@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3D Physics Sandbox</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="homepage">
+  <div id="menu">
+    <h1>3D Physics Sandbox</h1>
+    <p>Select a shape to start:</p>
+    <button onclick="startSandbox('cuboid')">Cuboid</button>
+    <button onclick="startSandbox('sphere')">Sphere</button>
+    <button onclick="startSandbox('pyramid')">Pyramid</button>
+    <button onclick="startSandbox('custom')">Custom</button>
+  </div>
+
+  <script>
+    function startSandbox(shape) {
+      
+      localStorage.setItem('selectedShape', shape);
+      
+      
+      document.getElementById('menu').style.display = 'none';
+      
+      
+      if (typeof initSandbox === 'function') {
+        initSandbox();
+      }
+    }
+  </script>
+
+  <script src="main.js"></script>
+</body class="homepage">
+</html>
+
+
