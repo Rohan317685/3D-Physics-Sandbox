@@ -1,19 +1,26 @@
+/* Homepage Styles */
 body.homepage {
   background-color: #0d0d0d;
   color: white;
   font-family: Arial, sans-serif;
-  text-align: center;
   margin: 0;
   padding: 0;
+  display: flex;
+  justify-content: center;   /* horizontal center */
+  align-items: center;       /* vertical center */
+  height: 100vh;             /* full viewport height */ 
+  text-align: center;        /* center text inside div */
+  flex-direction: column;    /* stack heading, paragraph, and buttons vertically */
 }
 
-body.homepage #menu {
-  margin-top: 100px;
+#menu {
+  /* spacing handled by flexbox */
 }
+
 
 body.homepage h1 {
   font-size: 3rem;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   letter-spacing: 2px;
   text-transform: uppercase;
   text-shadow: 0 0 10px #4af, 0 0 20px #4af;
@@ -43,26 +50,8 @@ body.homepage button:hover {
   transform: scale(1.05);
 }
 
+/* Controls / Sliders */
 #controls {
-  width: 200px;
-  position: absolute;
-  left: 20px;
-  top: 100px;
-  color: black;
-  font-size: 1.1rem;
-  text-transform: uppercase;
-}
-
-
-body.cuboid-page {
-  background-color: #ffffff; 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  color: black;
-}
-
-body.cuboid-page #controls {
   width: 220px;
   position: absolute;
   left: 20px;
@@ -87,7 +76,16 @@ p, label, span {
   font-weight: bold;
 }
 
-h1 {
+
+body.cuboid-page {
+  background-color: #ffffff; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: black;
+}
+
+body.cuboid-page h1 {
   font-size: 2rem;
   margin-top: 20px;
   text-align: left;

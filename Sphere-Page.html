@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sphere Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="cuboid-page"> 
+    <h1>Sphere Editor</h1>
+
+    <div id="controls">
+        <label>Radius: <span id="widthValue">1 cm</span></label>
+        <input id="widthSlider" type="range" min="1" max="5"value="1" />
+
+        <p>Volume: <span id="volumeOutput">1 cm³</span></p>
+        <p>Mass: <span id="massOutput">1 g</span></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
+

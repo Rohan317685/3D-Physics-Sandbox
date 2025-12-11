@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Shape Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="cuboid-page">
+    <h1>Custom Shape Editor</h1>
+
+    <div id="controls">
+
+    <label>Shape:
+        <select id="shapeSelector">
+            <option value="cuboid">Cuboid</option>
+            <option value="sphere">Sphere</option>
+            <option value="pyramid">Pyramid</option>
+
+        </select>
+        </label>
+
+
+        <label>Color:
+            <input type="color" id="colorPicker" value="#ff5500">
+        </label>
+
+
+        <label>Material:
+            <select id="materialSelector">
+                <option value="none" selected>None</option>
+                <option value="wood">Wood</option>
+                <option value="metal">Metal</option>
+                <option value="plastic">Plastic</option>
+
+            </select>
+        </label>
+
+
+        <label>Width: <span id="widthValue">1 cm</span></label>
+        <input id="widthSlider" type="range" min="1" max="10" value="1">
+
+         <label>Height: <span id="heightValue">1 cm</span></label>
+        <input id="heightSlider" type="range" min="1" max="10" value="1">
+
+         <label>Depth: <span id="depthValue">1 cm</span></label>
+        <input id="depthSlider" type="range" min="1" max="10" value="1">
+
+         <label>Mass: <span id="massSliderValue">1 g</span></label>
+        <input id="massSlider" type="range" min="1" max="100" value="1">
+
+         <label>Volume: <span id="volumeSliderValue">1 cm³</span></label>
+
+        <p>Density: <span id="densityOutput">0.6 g/cm³</span></p>
+        
+    </div>
+    
+     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="custom.js"></script>
+
+</body>
+</html>
