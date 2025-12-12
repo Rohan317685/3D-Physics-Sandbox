@@ -12,6 +12,11 @@
 
 
  <div id="controls">
+
+   <label>Color:
+      <input type="color" id="colorPicker" value="#ff5500">
+   </label>
+
     <label>Width: <span id="widthValue">1 cm</span></label>
     <input id="widthSlider" type="range" min="1" max="10" value="1"  />
 
@@ -27,7 +32,12 @@
 
      <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
   <script src="main.js"></script>
+  <button id="sendToTrampolineBtn" 
+        style="position:absolute; top:10px; right:10px; padding:5px; border-radius:5px;">
+    Trampoline Sim
+</button>
+
 </body>
 </html>
 
-    
+   

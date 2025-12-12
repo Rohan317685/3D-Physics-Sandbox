@@ -5,7 +5,7 @@
     <title>Custom Shape Editor</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="cuboid-page">
+<body>
     <h1>Custom Shape Editor</h1>
 
     <div id="controls">
@@ -14,48 +14,80 @@
         <select id="shapeSelector">
             <option value="cuboid">Cuboid</option>
             <option value="sphere">Sphere</option>
+            <option value="ellipsoid">Ellipsoid</option>
             <option value="pyramid">Pyramid</option>
-
+            <option value="cylinder">Cylinder</option>
+            <option value="cone">Cone</option>
+            <option value="torus">Torus</option>
+            <option value="capsule">Capsule</option>
+            <option value="ring">Ring</option>
+            <option value="octahedron">Octahedron</option>
+            <option value="dodecahedron">Dodecahedron</option>
+            <option value="icosahedron">Icosahedron</option>
         </select>
+    </label>
+
+    <label>Width: <span id="widthValue">1 cm</span>
+        <input id="widthSlider" type="range" min="1" max="5" value="1">
+    </label>
+
+    <label>Height: <span id="heightValue">1 cm</span>
+        <input id="heightSlider" type="range" min="1" max="5" value="1">
+    </label>
+
+    <label>Depth: <span id="depthValue">1 cm</span>
+        <input id="depthSlider" type="range" min="1" max="5" value="1">
+    </label>
+
+    <label>Radius: <span id="radiusValue">1 cm</span>
+        <input id="radiusSlider" type="range" min="1" max="5" value="1">
+    </label>
+
+    <div id="massControl">
+        <label>Mass: <span id="massSliderValue">1 g</span>
+            <input id="massSlider" type="range" min="1" max="100" value="1">
         </label>
-
-
-        <label>Color:
-            <input type="color" id="colorPicker" value="#ff5500">
-        </label>
-
-
-        <label>Material:
-            <select id="materialSelector">
-                <option value="none" selected>None</option>
-                <option value="wood">Wood</option>
-                <option value="metal">Metal</option>
-                <option value="plastic">Plastic</option>
-
-            </select>
-        </label>
-
-
-        <label>Width: <span id="widthValue">1 cm</span></label>
-        <input id="widthSlider" type="range" min="1" max="10" value="1">
-
-         <label>Height: <span id="heightValue">1 cm</span></label>
-        <input id="heightSlider" type="range" min="1" max="10" value="1">
-
-         <label>Depth: <span id="depthValue">1 cm</span></label>
-        <input id="depthSlider" type="range" min="1" max="10" value="1">
-
-         <label>Mass: <span id="massSliderValue">1 g</span></label>
-        <input id="massSlider" type="range" min="1" max="100" value="1">
-
-         <label>Volume: <span id="volumeSliderValue">1 cm³</span></label>
-
-        <p>Density: <span id="densityOutput">0.6 g/cm³</span></p>
-        
     </div>
-    
-     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-    <script src="custom.js"></script>
 
+    <label>Volume: <span id="volumeSliderValue">1 cm³</span></label>
+    <p>Density: <span id="densityOutput">0.6 g/cm³</span></p>
+
+    <label>Color:
+        <input type="color" id="colorPicker" value="#ff5500">
+    </label>
+
+    <label>Material:
+        <select id="materialSelector">
+            <option value="none" selected>None</option>
+            <option value="wood">Wood</option>
+            <option value="metal">Metal</option>
+            <option value="plastic">Plastic</option>
+            <option value="rubber">Rubber</option>
+            <option value="glass">Glass</option>
+            <option value="ice">Ice</option>
+            <option value="stone">Stone</option>
+            <option value="sand">Sand</option>
+            <option value="fabric">Fabric</option>
+            <option value="copper">Copper</option>
+            <option value="gold">Gold</option>
+            <option value="silver">Silver</option>
+            <option value="aluminum">Aluminum</option>
+            <option value="lead">Lead</option>
+            <option value="concrete">Concrete</option>
+            <option value="titanium">Titanium</option>
+        </select>
+    </label>
+
+</div>
+
+<button id="sendToTrampolineBtn" 
+        style="position:absolute; top:10px; right:10px; padding:5px; border-radius:5px;">
+    Trampoline Sim
+</button>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="custom.js"></script>
 </body>
 </html>

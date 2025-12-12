@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Trampoline Simulator</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+<body>
+    <h1>Trampoline Simulation</h1>
+
+    <div id="trampolineUI" style="position: absolute; top:10px; left:10px; background:rgba(255,255,255,0.8); border-radius:8px; font-family:Arial;">
+        <p>Current Height: <span id="currentHeight">0</span> cm</p>
+        <p>Peak Height: <span id="peakHeight">0</span> cm</p>
+    </div>
+
+    <label style="position: absolute; top:100px; left:10px; background:rgba(255,255,255,0.8); padding:5px; border-radius:5px;">
+        Drop Height: <span id="dropHeightValue">10</span> cm 
+        <input type="range" id="dropheightSlider" min="5" max="50" value="10">
+    </label>
+
+
+
+    <div id="metrics">
+        <p>Max height: <span id="maxHeight">0</span> cm</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="trampoline.js"></script>
+</body>
+</html>

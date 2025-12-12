@@ -29,8 +29,8 @@ function initCuboidEditor() {
 
     const dir = new THREE.DirectionalLight(0xffffff, 1);
     dir.position.set(5, 10, 8);
-    scene.add(dir);
-
+    scene.add(dir);                                 
+ 
     const fill = new THREE.DirectionalLight(0xffffff, 0.4);
     fill.position.set(-5, -2, -8);
     scene.add(fill);
@@ -43,9 +43,10 @@ function initCuboidEditor() {
 function createCuboid(w, h, d) {
     if (cuboid) scene.remove(cuboid);
 
+    const colorHex = document.getElementById("colorPicker")?.value || "#ff5500";
     const geometry = new THREE.BoxGeometry(w, h, d);
     const material = new THREE.MeshStandardMaterial({
-        color: 0xff5500,
+        color: parseInt(colorHex.slice(1), 16),
         metalness: 0.8,
         roughness: 0.2
     });
@@ -58,6 +59,7 @@ function setupCuboidSliders() {
     document.getElementById("widthSlider").oninput = updateCuboid;
     document.getElementById("heightSlider").oninput = updateCuboid;
     document.getElementById("depthSlider").oninput = updateCuboid;
+    document.getElementById("colorPicker").oninput = updateCuboid;
 }
 
 function updateCuboid() {
@@ -110,10 +112,11 @@ function initSphereEditor() {
 
 function createSphere(radius) {
     if (sphere) scene.remove(sphere);
+    const colorHex = document.getElementById("colorPicker")?.value || "#ff5500";
 
     const geometry = new THREE.SphereGeometry(radius, 64, 64);
     const material = new THREE.MeshStandardMaterial({
-        color: 0xff5500,
+        color: parseInt(colorHex.slice(1), 16),
         metalness: 0.8,
         roughness: 0.2
     });
@@ -123,6 +126,8 @@ function createSphere(radius) {
 }
 
 function setupSphereSlider() {
+
+    document.getElementById("colorPicker").oninput = updateSphere;
     document.getElementById("widthSlider").oninput = updateSphere;
 }
 
@@ -180,9 +185,10 @@ function initPyramidEditor() {
 function createPyramid(width, height) {
     if (pyramid) scene.remove(pyramid);
 
+    const colorHex = document.getElementById("colorPicker")?.value || "#ff5500";
     const geometry = new THREE.ConeGeometry(width, height, 4); 
     const material = new THREE.MeshStandardMaterial({
-        color: 0xff5500,
+        color: parseInt(colorHex.slice(1), 16),
         metalness: 0.8,
         roughness: 0.2
     });
@@ -194,6 +200,7 @@ function createPyramid(width, height) {
 }
 
 function setupPyramidSliders() {
+    document.getElementById("colorPicker").oninput = updatePyramid;
     document.getElementById("widthSlider").oninput = updatePyramid;
     document.getElementById("heightSlider").oninput = updatePyramid;
 }
@@ -214,6 +221,8 @@ function updatePyramid() {
     document.getElementById("massOutput").textContent = (volume * density).toFixed(2) + " g";
 }
 
+
+
 function animatePyramid() {
     requestAnimationFrame(animatePyramid);
     if (pyramid) pyramid.rotation.y += 0.01;
@@ -223,3 +232,40 @@ function animatePyramid() {
 if (window.location.pathname.includes("Pyramid-Page.html")) {
     initPyramidEditor();
 }
+
+
+window.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("sendToTrampolineBtn");
+    if (!btn) return;
+
+    btn.addEventListener("click", () => {
+        let shapeType, width=2, height=2, depth=2, radius=1;
+
+        if (window.location.pathname.includes("Cuboid-Page.html")) {
+            shapeType = "cuboid";
+            width = Number(document.getElementById("widthSlider").value);
+            height = Number(document.getElementById("heightSlider").value);
+            depth = Number(document.getElementById("depthSlider").value);
+        } 
+        else if (window.location.pathname.includes("Sphere-Page.html")) {
+            shapeType = "sphere";
+            radius = Number(document.getElementById("widthSlider").value);
+        } 
+        else if (window.location.pathname.includes("Pyramid-Page.html")) {
+            shapeType = "pyramid";
+            width = Number(document.getElementById("widthSlider").value);
+            height = Number(document.getElementById("heightSlider").value);
+        }
+
+        const shapeData = {
+            type: shapeType,
+            dimensions: { width, height, depth, radius }
+        };
+
+        localStorage.setItem("trampolineShape", JSON.stringify(shapeData));
+
+        window.location.href = "Trampoline-Page.html";
+    });
+});
+
+
