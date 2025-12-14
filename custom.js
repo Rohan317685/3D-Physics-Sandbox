@@ -48,6 +48,7 @@ function updateSlidersForShape(shape) {
 
 function initCustomScene() {
     scene = new THREE.Scene();
+    scene = new THREE.Scene();
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0xffffff);
@@ -197,20 +198,36 @@ if (window.location.pathname.includes("Custom-Page.html")) {
     initCustomEditor();
 } 
 
-document.getElementById("sendToTrampolineBtn").addEventListener("click", () => {
-    const shapeType = document.getElementById("shapeSelector")?.value || "cuboid"; 
-    const width = Number(document.getElementById("widthSlider")?.value || 2);
-    const height = Number(document.getElementById("heightSlider")?.value || 2);
-    const depth = Number(document.getElementById("depthSlider")?.value || 2);
-    const radius = Number(document.getElementById("radiusSlider")?.value || 1);
+window.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("sendToTrampolineBtn");
+    if (!btn) return;
 
-    const shapeData = {
-        type: shapeType,
-        dimensions: { width, height, depth, radius }
-    };
+    btn.addEventListener("click", () => {
+        const shapeType =
+            document.getElementById("shapeSelector")?.value || "cuboid";
 
-    localStorage.setItem("trampolineShape", JSON.stringify(shapeData));
+        const width  = Number(document.getElementById("widthSlider")?.value || 2);
+        const height = Number(document.getElementById("heightSlider")?.value || 2);
+        const depth  = Number(document.getElementById("depthSlider")?.value || 2);
+        const radius = Number(document.getElementById("radiusSlider")?.value || 1);
 
-    
-    window.location.href = "Trampoline-Page.html";
+        const colorHex =
+            document.getElementById("colorPicker")
+                ? document.getElementById("colorPicker").value
+                : "#ff5500";
+
+        const shapeData = {
+            type: shapeType,
+            dimensions: { width, height, depth, radius },
+            color: colorHex
+        };
+
+        localStorage.setItem(
+            "trampolineShape",
+            JSON.stringify(shapeData)
+        );
+
+        window.location.href = "Trampoline-Page.html";
+    });
 });
+
