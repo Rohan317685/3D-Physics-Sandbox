@@ -237,4 +237,3 @@ window.addEventListener("DOMContentLoaded", () => {
         window.location.href = "Trampoline-Page.html";
     });
 });
-

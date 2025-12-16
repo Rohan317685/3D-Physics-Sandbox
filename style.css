@@ -119,3 +119,17 @@ body.cuboid-page h1 {
 #sidebar input[type="range"] {
   width: 100%;
 }
+
+body {
+  position: relative; /* ensures absolute positioning is relative to body */
+}
+
+#trampolineTitle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  margin: 0;
+  z-index: 999; /* high value to stay on top */
+  color: #000;
+  font-size: 24px;
+}
