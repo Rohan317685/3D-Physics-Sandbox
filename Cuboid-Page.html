@@ -1,43 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Cuboid Editor</title>
-    <link rel="stylesheet" href="style.css">
- </head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuboid Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body class="cuboid-page">
 
+  <h1>Cuboid Editor</h1>
 
- <h1>Cuboid Editor</h1>
-
-
- <div id="controls">
-
-   <label>Color:
-      <input type="color" id="colorPicker" value="#ff5500">
-   </label>
-
+  <div id="controls">
     <label>Width: <span id="widthValue">1 cm</span></label>
-    <input id="widthSlider" type="range" min="1" max="10" value="1"  />
+    <input id="widthSlider" type="range" min="1" max="10" value="1">
 
     <label>Height: <span id="heightValue">1 cm</span></label>
-    <input id="heightSlider" type="range" min="1" max="10" value="1" />
+    <input id="heightSlider" type="range" min="1" max="10" value="1">
 
     <label>Depth: <span id="depthValue">1 cm</span></label>
-    <input id="depthSlider" type="range" min="1" max="10" value="1" />
+    <input id="depthSlider" type="range" min="1" max="10" value="1">
 
-    <p>Volume: <span id="volumeOutput">1 &sup3;</span></p>
+    <label>Color:
+      <input type="color" id="colorPicker" value="#ff5500">
+    </label>
+
+    <p>Volume: <span id="volumeOutput">1 cm³</span></p>
     <p>Mass: <span id="massOutput">1 g</span></p>
+
+    <div style="margin-top:10px;">
+      <button id="goToFloat">Floating Simulator</button>
+      <button id="sendToTrampolineBtn">Trampoline Sim</button>
     </div>
+  </div>
 
-     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <div id="canvas-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
   <script src="main.js"></script>
-  <button id="sendToTrampolineBtn" 
-        style="position:absolute; top:10px; right:10px; padding:5px; border-radius:5px;">
-    Trampoline Sim
-</button>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      function saveShape() {
+        const w = Number(document.getElementById("widthSlider").value);
+        const h = Number(document.getElementById("heightSlider").value);
+        const d = Number(document.getElementById("depthSlider").value);
+        const color = document.getElementById("colorPicker").value;
+        const shapeData = { type:"cuboid", dimensions:{ width:w, height:h, depth:d }, color, density:0.6 };
+        localStorage.setItem("trampolineShape", JSON.stringify(shapeData));
+      }
 
+      document.getElementById("goToFloat").addEventListener("click", () => {
+        saveShape();
+        location.href = "Float-Page.html";
+      });
+
+      document.getElementById("sendToTrampolineBtn").addEventListener("click", () => {
+        saveShape();
+        location.href = "Trampoline-Page.html";
+      });
+    });
+  </script>
 </body>
 </html>
 
-   

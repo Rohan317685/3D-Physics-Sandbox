@@ -1,145 +1,125 @@
-// ================= FLOAT PAGE (CLEAN VERSION) =================
-
 let scene, camera, renderer;
-let shapeMesh, waterPlane;
+let shapeMesh, poolPlane;
 
 const WATER_DENSITY = 1000; // kg/m³
-const DEFAULT_DENSITY = 600;
-
-// ---------------- INIT SCENE ----------------
 
 function initScene() {
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xeef6ff);
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xeef6ff);
 
-  camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-  camera.position.set(0, 6, 18);
+    camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
+    camera.position.set(0, 10, 25);
 
-  renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById("canvas-container").appendChild(renderer.domElement);
 
-  const container = document.getElementById("canvas-container");
-  if (!container) {
-    alert("canvas-container not found");
-    return;
-  }
-  container.appendChild(renderer.domElement);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+    sun.position.set(10, 20, 10);
+    scene.add(sun);
 
-  // Lights
-  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-  const sun = new THREE.DirectionalLight(0xffffff, 0.8);
-  sun.position.set(10, 20, 10);
-  scene.add(sun);
+    // Water plane
+    const waterGeo = new THREE.PlaneGeometry(30, 12);
+    const waterMat = new THREE.MeshPhongMaterial({
+        color: 0x1e90ff,
+        transparent: true,
+        opacity: 0.7,
+    });
+    poolPlane = new THREE.Mesh(waterGeo, waterMat);
+    poolPlane.rotation.x = -Math.PI/2;
+    poolPlane.position.y = 0;
+    scene.add(poolPlane);
 
-  // Water surface
-  const waterGeo = new THREE.PlaneGeometry(30, 12);
-  const waterMat = new THREE.MeshPhongMaterial({
-    color: 0x1e90ff,
-    transparent: true,
-    opacity: 0.7
-  });
-
-  waterPlane = new THREE.Mesh(waterGeo, waterMat);
-  waterPlane.rotation.x = -Math.PI / 2;
-  waterPlane.position.y = 0;
-  scene.add(waterPlane);
-
-  window.addEventListener("resize", onResize);
-  onResize();
+    window.addEventListener("resize", onResize);
+    onResize();
 }
-
-// ---------------- LOAD SHAPE ----------------
 
 function loadShape() {
-  const raw = localStorage.getItem("trampolineShape");
-  if (!raw) {
-    alert("No shape data found. Go back to editor.");
-    return;
-  }
+    const data = JSON.parse(localStorage.getItem("trampolineShape"));
+    if (!data) return alert("No shape found!");
 
-  let data;
-  try {
-    data = JSON.parse(raw);
-  } catch (e) {
-    alert("Invalid shape data");
-    console.error(e);
-    return;
-  }
+    if (shapeMesh) scene.remove(shapeMesh);
 
-  if (data.type !== "sphere") {
-    alert("Float sim currently supports spheres only");
-    return;
-  }
+    let geometry;
 
-  const radius = Number(data.dimensions?.radius);
-  if (!radius || radius <= 0) {
-    alert("Invalid sphere radius");
-    return;
-  }
+    switch(data.type) {
+        case "sphere":
+            geometry = new THREE.SphereGeometry(data.dimensions.radius, 48, 48);
+            break;
+        case "cuboid":
+            geometry = new THREE.BoxGeometry(
+                data.dimensions.width,
+                data.dimensions.height,
+                data.dimensions.depth
+            );
+            break;
+        case "pyramid":
+            geometry = new THREE.ConeGeometry(
+                data.dimensions.width,
+                data.dimensions.height,
+                4
+            );
+            break;
+        default:
+            geometry = new THREE.BoxGeometry(1,1,1);
+    }
 
-  const density = Number(data.density ?? DEFAULT_DENSITY);
-  const color = data.color ?? "#ff5500";
+    const material = new THREE.MeshStandardMaterial({
+        color: data.color || 0xff5500,
+        roughness: 0.6,
+        metalness: 0.1
+    });
 
-  if (shapeMesh) scene.remove(shapeMesh);
+    shapeMesh = new THREE.Mesh(geometry, material);
+    shapeMesh.position.y = 5;
+    scene.add(shapeMesh);
 
-  const geometry = new THREE.SphereGeometry(radius, 48, 48);
-  const material = new THREE.MeshStandardMaterial({
-    color,
-    roughness: 0.6,
-    metalness: 0.1
-  });
-
-  shapeMesh = new THREE.Mesh(geometry, material);
-  shapeMesh.position.y = 6;
-  scene.add(shapeMesh);
-
-  // Physics values
-  shapeMesh.radius = radius;
-  shapeMesh.volume = (4 / 3) * Math.PI * radius ** 3;
-  shapeMesh.density = density;
-  shapeMesh.mass = shapeMesh.volume * density;
+    // physics for floating
+    shapeMesh.volume = computeVolume(data);
+    shapeMesh.mass = shapeMesh.volume * (data.density / 1000); // g->kg
+    shapeMesh.density = data.density / 1000; 
 }
 
-// ---------------- ANIMATION ----------------
+function computeVolume(data) {
+    switch(data.type) {
+        case "sphere":
+            const r = data.dimensions.radius;
+            return (4/3) * Math.PI * r**3;
+        case "cuboid":
+            const { width, height, depth } = data.dimensions;
+            return width * height * depth;
+        case "pyramid":
+            const { width: w, height: h } = data.dimensions;
+            return (1/3) * w * w * h;
+        default:
+            return 1;
+    }
+}
 
 function animate() {
-  requestAnimationFrame(animate);
-
-  if (shapeMesh) {
-    // Fraction submerged based on density ratio
-    const submerged = Math.min(
-      shapeMesh.density / WATER_DENSITY,
-      1
-    );
-
-    // Target vertical position
-    const targetY =
-      (0.5 - submerged) * (shapeMesh.radius * 2);
-
-    shapeMesh.position.y +=
-      (targetY - shapeMesh.position.y) * 0.04;
-  }
-
-  renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+    if (shapeMesh) {
+        const submergedFraction = Math.min(shapeMesh.density / WATER_DENSITY, 1);
+        const targetY = (0.5 - submergedFraction) * (shapeMesh.scale.y || 1) * 2;
+        shapeMesh.position.y += (targetY - shapeMesh.position.y) * 0.03;
+    }
+    renderer.render(scene, camera);
 }
-
-// ---------------- RESIZE ----------------
 
 function onResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-// ---------------- START ----------------
-
 window.addEventListener("DOMContentLoaded", () => {
-  initScene();
-  loadShape();
-  animate();
+    initScene();
+    loadShape();
+    animate();
 });

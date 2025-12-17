@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sphere Editor</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body class="cuboid-page">
+
   <h1>Sphere Editor</h1>
 
   <div id="controls">
     <label>Radius: <span id="widthValue">1 cm</span></label>
-    <input id="widthSlider" type="range" min="1" max="5" value="1">
+    <input id="widthSlider" type="range" min="1" max="10" value="1">
 
     <label>Color:
       <input type="color" id="colorPicker" value="#ff5500">
@@ -19,16 +20,37 @@
 
     <p>Volume: <span id="volumeOutput">1 cm³</span></p>
     <p>Mass: <span id="massOutput">1 g</span></p>
+
+    <div style="margin-top:10px;">
+      <button id="goToFloat">Floating Simulator</button>
+      <button id="sendToTrampolineBtn">Trampoline Sim</button>
+    </div>
   </div>
 
-  <button id="goToFloat">Floating Simulator</button>
-
-  <button id="sendToTrampolineBtn"
-    style="position:absolute; top:10px; right:10px; padding:5px; border-radius:5px;">
-    Trampoline Sim
-  </button>
+  <div id="canvas-container"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
   <script src="main.js"></script>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      function saveShape() {
+        const radius = Number(document.getElementById("widthSlider").value);
+        const color = document.getElementById("colorPicker").value;
+        const shapeData = { type:"sphere", dimensions:{ radius }, color, density:0.6 };
+        localStorage.setItem("trampolineShape", JSON.stringify(shapeData));
+      }
+
+      document.getElementById("goToFloat").addEventListener("click", () => {
+        saveShape();
+        location.href = "Float-Page.html";
+      });
+
+      document.getElementById("sendToTrampolineBtn").addEventListener("click", () => {
+        saveShape();
+        location.href = "Trampoline-Page.html";
+      });
+    });
+  </script>
 </body>
 </html>
+

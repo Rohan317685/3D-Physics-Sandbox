@@ -13,11 +13,11 @@ function initBaseScene() {
     const container = document.getElementById("canvas-container") || document.body;
     container.appendChild(renderer.domElement);
 
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     camera.position.set(0, 2, 15);
 
     window.addEventListener("resize", () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = window.innerWidth/window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
@@ -71,6 +71,8 @@ function updateSphere() {
 
 function initSphereEditor() {
     initBaseScene();
+    camera.position.set(0, 2, 15);
+
     document.getElementById("widthSlider").oninput = updateSphere;
     document.getElementById("colorPicker").oninput = updateSphere;
     updateSphere();
@@ -88,7 +90,7 @@ function updateCuboid() {
     document.getElementById("depthValue").textContent = d + " cm";
 
     clearMesh();
-    const geometry = new THREE.BoxGeometry(w, h, d);
+    const geometry = new THREE.BoxGeometry(w,h,d);
     const material = new THREE.MeshStandardMaterial({
         color: getColor(),
         metalness: 0.6,
@@ -98,16 +100,19 @@ function updateCuboid() {
     activeMesh = new THREE.Mesh(geometry, material);
     scene.add(activeMesh);
 
-    const volume = w * h * d;
+    const volume = w*h*d;
     document.getElementById("volumeOutput").textContent = volume.toFixed(2) + " cm³";
     document.getElementById("massOutput").textContent = (volume * 0.6).toFixed(2) + " g";
 }
 
 function initCuboidEditor() {
     initBaseScene();
+    camera.position.set(0, 3, 12);
+
     ["widthSlider","heightSlider","depthSlider","colorPicker"].forEach(id => {
         document.getElementById(id).oninput = updateCuboid;
     });
+
     updateCuboid();
     animate();
 }
@@ -129,20 +134,24 @@ function updatePyramid() {
     });
 
     activeMesh = new THREE.Mesh(geometry, material);
-    activeMesh.rotation.y = Math.PI/4; // orient pyramid square base
+    activeMesh.rotation.y = Math.PI/4;
     activeMesh.position.y = h/2;
     scene.add(activeMesh);
 
-    const volume = (1/3) * w * w * h;
+    const volume = (1/3) * w*w*h;
     document.getElementById("volumeOutput").textContent = volume.toFixed(2) + " cm³";
     document.getElementById("massOutput").textContent = (volume * 0.6).toFixed(2) + " g";
 }
 
 function initPyramidEditor() {
     initBaseScene();
+    camera.position.set(0, 5, 12);
+    camera.lookAt(0,0,0);
+
     ["widthSlider","heightSlider","colorPicker"].forEach(id => {
         document.getElementById(id).oninput = updatePyramid;
     });
+
     updatePyramid();
     animate();
 }
@@ -210,4 +219,3 @@ window.addEventListener("DOMContentLoaded", () => {
         location.href = "Trampoline-Page.html";
     });
 });
-

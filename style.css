@@ -23,6 +23,8 @@ body.homepage {
   position: relative;
 }
 
+#canvas-container { z-index:1; }
+#controls { z-index:10; }
 
 
 body.homepage h1 {
@@ -121,7 +123,7 @@ body.cuboid-page h1 {
 }
 
 body {
-  position: relative; /* ensures absolute positioning is relative to body */
+  position: relative; 
 }
 
 #trampolineTitle {
@@ -129,7 +131,7 @@ body {
   top: 10px;
   left: 10px;
   margin: 0;
-  z-index: 999; /* high value to stay on top */
+  z-index: 999; 
   color: #000;
   font-size: 24px;
 }

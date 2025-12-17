@@ -1,44 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Pyramid Editor</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body class="cuboid-page">
-        <h1>Pyramid Editor</h1>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pyramid Editor</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Make sure controls stay on top */
+  #canvas-container { 
+    width: 100vw; 
+    height: 100vh; 
+    position: relative; 
+    z-index: 1; 
+  }
+  #controls { 
+    position: absolute;
+    top: 20px; 
+    left: 20px; 
+    background: rgba(240,240,240,0.9); 
+    padding: 15px; 
+    border-radius: 10px; 
+    z-index: 10; 
+    font-weight: bold;
+  }
+  input[type="range"] { width: 100%; margin-bottom: 10px; }
+  p, label, span { color: black; font-weight: bold; }
+</style>
+</head>
+<body class="cuboid-page">
 
-        <div id="controls">
-            <label>Base Width: <span id="widthValue">1cm</span></label>
-            <input id="widthSlider" type="range" min="1" max="10" value="1" />
+<div id="canvas-container"></div>
 
-             <label>Height: <span id="heightValue">1cm</span></label>
-            <input id="heightSlider" type="range" min="1" max="10" value="1" />
+<div id="controls">
+  <label>Base Width: <span id="widthValue">1 cm</span></label>
+  <input id="widthSlider" type="range" min="1" max="10" value="1">
 
-            <label>Color:
-                <input type="color" id="colorPicker" value="#ff5500">
-            </label>
+  <label>Height: <span id="heightValue">1 cm</span></label>
+  <input id="heightSlider" type="range" min="1" max="10" value="1">
 
-            <p>Volume: <span id="volumeOutput">1 cm³</span></p>
-            <p>Mass: <span id="massOutput">1 g</span></p>
+  <label>Color:
+    <input type="color" id="colorPicker" value="#ff5500">
+  </label>
 
-            
+  <p>Volume: <span id="volumeOutput">1 cm³</span></p>
+  <p>Mass: <span id="massOutput">1 g</span></p>
 
-            <button id="goToFloat">Floating Simulator</button>
-            
+  <button id="goToFloat">Floating Simulator</button>
+  <button id="sendToTrampolineBtn">Trampoline Sim</button>
+</div>
 
-
-
-        </div>
-
-        <div id="canvas-container"></div>
-
-        <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-    <script src="main.js"></script>
-    <button id="sendToTrampolineBtn" 
-        style="position:absolute; top:10px; right:10px; padding:5px; border-radius:5px;">
-    Trampoline Sim
-</button>
-
-    </body>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="main.js"></script>
+</body>
 </html>
