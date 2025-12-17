@@ -3,14 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D Buoyancy Simulator</title>
+<title>Buoyancy Sim</title>
 <style>
-  body { margin:0; overflow:hidden; }
-  #canvas-container { width:100%; height:100vh; }
+  body { margin:0; overflow:hidden; font-family:sans-serif; }
+  #canvas-container { width:100%; height:100vh; position:relative; }
+  #heading {
+    position:absolute;
+    top:10px;
+    left:10px;
+    font-size:24px;
+    font-weight:bold;
+    color:#333;
+    z-index:10;
+  }
+  #depthDisplay {
+    position:absolute;
+    top:40px;
+    left:10px;
+    font-size:18px;
+    color:#333;
+    z-index:10;
+  }
 </style>
 </head>
 <body>
-<div id="canvas-container"></div>
+<div id="canvas-container">
+  <div id="heading">Buoyancy Sim</div>
+  <div id="depthDisplay">Depth: 0.00 m</div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script src="Float-Page.js" defer></script>
 </body>

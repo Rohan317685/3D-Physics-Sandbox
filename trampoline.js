@@ -15,12 +15,12 @@ const AIR_MIN = 0;
 const AIR_MAX = 2;
 let airResistance = 0.05;
 
-// Utility clamp
+
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
-// Custom shapes
+
 const customShapes = {
   cuboid: { geometry: (w,h,d) => new THREE.BoxGeometry(w,h,d), density: 0.6 },
   sphere: { geometry: (r) => new THREE.SphereGeometry(r,64,64), density: 0.6 },
@@ -36,7 +36,7 @@ const customShapes = {
   icosahedron: { geometry: (r) => new THREE.IcosahedronGeometry(r,0), density: 0.6 },
 };
 
-// Initialize scene
+
 function initScene() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xffffff);
@@ -57,7 +57,7 @@ function initScene() {
   scene.add(dirLight);
 }
 
-// Create trampoline
+
 function createTrampoline() {
   const geometry = new THREE.CylinderGeometry(10,10,0.5,32);
   const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
@@ -66,7 +66,7 @@ function createTrampoline() {
   scene.add(trampolineMesh);
 }
 
-// Setup simulation object
+
 function setupObject(mesh, mass) {
   simObject = mesh;
   simMass = mass;
@@ -79,7 +79,7 @@ function setupObject(mesh, mass) {
   peakHeightAfterBounce = 0;
 }
 
-// Physics step
+
 function trampolineStep(deltaTime) {
   if (!simObject || !trampolineMesh || !isDropped) return;
 
@@ -119,7 +119,7 @@ function trampolineStep(deltaTime) {
     firstBounceDone ? peakHeightAfterBounce.toFixed(2) : "-";
 }
 
-// Animate loop
+
 function animate() {
   const now = performance.now();
   const deltaTime = (now - lastTime)/1000;
@@ -130,7 +130,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-// Start simulation
+
 function startTrampolineSim(mesh, mass) {
   if (renderer) {
     renderer.dispose();
@@ -147,7 +147,7 @@ function startTrampolineSim(mesh, mass) {
   animate();
 }
 
-// Load object from localStorage
+
 function loadObjectFromStorage() {
   const shapeJSON = localStorage.getItem("trampolineShape");
   if (!shapeJSON) return;
@@ -191,7 +191,7 @@ function loadObjectFromStorage() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  // Load object from storage
+
   loadObjectFromStorage();
 
   const dropHeightSlider = document.getElementById("dropheightSlider");
@@ -203,17 +203,16 @@ window.addEventListener("DOMContentLoaded", () => {
   const currentHeightDisplay = document.getElementById("currentHeight");
   const peakHeightDisplay = document.getElementById("peakHeight");
 
-  // Initialize air resistance
+ 
   airResistance = clamp(Number(airSlider.value), AIR_MIN, AIR_MAX);
   airValue.textContent = airResistance.toFixed(2) + " kg/s";
 
-  // Air resistance slider
   airSlider?.addEventListener("input", () => {
     airResistance = clamp(Number(airSlider.value), AIR_MIN, AIR_MAX);
     airValue.textContent = airResistance.toFixed(2) + " kg/s";
   });
 
-  // Drop height slider
+  
   dropHeightSlider?.addEventListener("input", () => {
     const dropHeight = Number(dropHeightSlider.value);
     dropHeightValue.textContent = dropHeight;
@@ -222,7 +221,6 @@ window.addEventListener("DOMContentLoaded", () => {
       positionY = dropHeight;
       simObject.position.y = positionY;
 
-      // Reset peak tracking without starting the drop
       firstBounceDone = false;
       peakHeightAfterBounce = 0;
       isDropped = false;
@@ -232,7 +230,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Drop button
   dropBtn?.addEventListener("click", () => {
     if (!simObject) return;
 
@@ -241,11 +238,11 @@ window.addEventListener("DOMContentLoaded", () => {
     firstBounceDone = false;
     peakHeightAfterBounce = 0;
 
-    // Update peak display immediately
+    
     peakHeightDisplay.textContent = "-";
   });
 
-  // Reset Peak Height button
+  
   resetPeakBtn?.addEventListener("click", () => {
     if (!simObject) return;
 
