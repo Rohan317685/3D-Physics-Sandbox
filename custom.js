@@ -1,21 +1,7 @@
 let scene, camera, renderer;
-let customShape;
+let activeMesh = null;
 
-const shapeSliders = {
-    cuboid: ["widthSlider", "heightSlider", "depthSlider", "massSlider"],
-    sphere: ["radiusSlider", "massSlider"],
-    ellipsoid: ["radiusSlider", "massSlider"],
-    pyramid: ["widthSlider", "heightSlider", "massSlider"],
-    cylinder: ["radiusSlider", "heightSlider", "massSlider"],
-    cone: ["radiusSlider", "heightSlider", "massSlider"],
-    torus: ["radiusSlider", "depthSlider", "massSlider"],
-    capsule: ["radiusSlider", "heightSlider", "massSlider"],
-    ring: ["radiusSlider", "widthSlider", "massSlider"],
-    octahedron: ["radiusSlider", "massSlider"],
-    dodecahedron: ["radiusSlider", "massSlider"],
-    icosahedron: ["radiusSlider", "massSlider"]
-};
-
+// Materials / densities
 const materials = {
     none: { color: null, density: 0.6 },
     wood: { color: 0x8B4513, density: 0.7 },
@@ -36,198 +22,203 @@ const materials = {
     titanium: { color: 0x888888, density: 4.5, metalness: 0.9, roughness: 0.2 }
 };
 
-function updateSlidersForShape(shape) {
-    const allSliders = ["widthSlider", "heightSlider", "depthSlider", "radiusSlider", "massSlider"];
-    const slidersToShow = shapeSliders[shape] || [];
-    allSliders.forEach(id => {
-        const el = document.getElementById(id);
-        const container = el.closest("label") || el.parentElement;
-        container.style.display = slidersToShow.includes(id) ? "block" : "none";
-    });
-}
+// Slider IDs per shape
+const shapeSliders = {
+    cuboid: ["widthSlider","heightSlider","depthSlider","massSlider"],
+    sphere: ["radiusSlider","massSlider"],
+    ellipsoid: ["radiusSlider","massSlider"],
+    pyramid: ["widthSlider","heightSlider","massSlider"],
+    cylinder: ["radiusSlider","heightSlider","massSlider"],
+    cone: ["radiusSlider","heightSlider","massSlider"],
+    torus: ["radiusSlider","depthSlider","massSlider"],
+    capsule: ["radiusSlider","heightSlider","massSlider"],
+    ring: ["radiusSlider","widthSlider","massSlider"],
+    octahedron: ["radiusSlider","massSlider"],
+    dodecahedron: ["radiusSlider","massSlider"],
+    icosahedron: ["radiusSlider","massSlider"]
+};
 
-function initCustomScene() {
+// --- Base Scene ---
+function initScene() {
     scene = new THREE.Scene();
-    scene = new THREE.Scene();
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    scene.background = new THREE.Color(0xffffff);
+
+    renderer = new THREE.WebGLRenderer({antialias:true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0xffffff);
-    document.body.appendChild(renderer.domElement);
+    const container = document.getElementById("canvas-container") || document.body;
+    container.appendChild(renderer.domElement);
 
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 2, 15);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.set(0,2,15);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight.position.set(5, 10, 8);
+    scene.add(new THREE.AmbientLight(0xffffff,0.6));
+    const dirLight=new THREE.DirectionalLight(0xffffff,1);
+    dirLight.position.set(5,10,8);
     scene.add(dirLight);
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
-    fillLight.position.set(-5, -2, -8);
-    scene.add(fillLight);
-}
 
-function createCustomShape(type, width, height, depth, radius, color) {
-    if (customShape) scene.remove(customShape);
-    let geometry;
-
-    switch (type) {
-        case "cuboid":
-            geometry = new THREE.BoxGeometry(width, height, depth);
-            break;
-        case "sphere":
-        case "ellipsoid": 
-            geometry = new THREE.SphereGeometry(radius, 64, 64);
-            break;
-        case "pyramid":
-            geometry = new THREE.ConeGeometry(width, height, 4);
-            break;
-        case "cylinder":
-            geometry = new THREE.CylinderGeometry(radius, radius, height, 32);
-            break;
-        case "cone":
-            geometry = new THREE.ConeGeometry(radius, height, 32);
-            break;
-        case "torus":
-            geometry = new THREE.TorusGeometry(radius, depth, 16, 100);
-            break;
-        case "capsule":
-            geometry = new THREE.CapsuleGeometry(radius, height, 4, 8);
-            break;
-        case "ring":
-            geometry = new THREE.RingGeometry(radius, width, 32);
-            break;
-        case "octahedron":
-            geometry = new THREE.OctahedronGeometry(radius);
-            break;
-        case "dodecahedron":
-            geometry = new THREE.DodecahedronGeometry(radius);
-            break;
-        case "icosahedron":
-            geometry = new THREE.IcosahedronGeometry(radius);
-            break;
-        default:
-            console.error("Unknown shape type");
-            return;
-    }
-
-    const material = new THREE.MeshStandardMaterial({ color: color });
-    customShape = new THREE.Mesh(geometry, material);
-    if (type === "pyramid") customShape.rotation.y = Math.PI / 4;
-    scene.add(customShape);
-}
-
-function updateCustomShape() {
-    const type = document.getElementById("shapeSelector").value;
-    updateSlidersForShape(type);
-
-    const width = Number(document.getElementById("widthSlider").value);
-    const height = Number(document.getElementById("heightSlider").value);
-    const depth = Number(document.getElementById("depthSlider").value);
-    const radius = Number(document.getElementById("radiusSlider").value);
-    const mass = Number(document.getElementById("massSlider").value);
-
-    const selectedMaterial = document.getElementById("materialSelector").value;
-    const materialProps = materials[selectedMaterial];
-
-    const massControl = document.getElementById("massControl");
-    massControl.style.display = selectedMaterial === "none" ? "block" : "none";
-
-    let shapeColor;
-    if (selectedMaterial === "none") {
-        shapeColor = parseInt(document.getElementById("colorPicker").value.slice(1), 16);
-    } else {
-        shapeColor = materialProps.color;
-        document.getElementById("colorPicker").value = "#" + shapeColor.toString(16).padStart(6, '0');
-    }
-
-    createCustomShape(type, width, height, depth, radius, shapeColor);
-
-    if (document.getElementById("widthValue")) document.getElementById("widthValue").textContent = width + " cm";
-    if (document.getElementById("heightValue")) document.getElementById("heightValue").textContent = height + " cm";
-    if (document.getElementById("depthValue")) document.getElementById("depthValue").textContent = depth + " cm";
-    if (document.getElementById("radiusValue")) document.getElementById("radiusValue").textContent = radius + " cm";
-
-    let volume = 0;
-    switch (type) {
-        case "cuboid": volume = width * height * depth; break;
-        case "sphere":
-        case "ellipsoid": volume = (4/3) * Math.PI * radius**3; break;
-        case "pyramid": volume = (1/3) * width * width * height; break;
-        case "cylinder": volume = Math.PI * radius**2 * height; break;
-        case "cone": volume = (1/3) * Math.PI * radius**2 * height; break;
-        case "torus": volume = 2 * Math.PI**2 * radius * depth**2; break;
-        case "capsule": volume = Math.PI * radius**2 * ((4/3)*radius + height); break;
-        case "ring": volume = Math.PI * (width**2 - radius**2); break;
-        case "octahedron": volume = (Math.sqrt(2)/3) * radius**3; break;
-        case "dodecahedron": volume = (15 + 7*Math.sqrt(5))/4 * radius**3; break;
-        case "icosahedron": volume = (5*(3+Math.sqrt(5))/12) * radius**3; break;
-    }
-
-    let density = selectedMaterial === "none" ? (volume ? mass / volume : 0) : materialProps.density;
-
-    document.getElementById("volumeSliderValue").textContent = volume.toFixed(2) + " cm³";
-    document.getElementById("massSliderValue").textContent = mass.toFixed(2) + " g";
-    document.getElementById("densityOutput").textContent = density.toFixed(2) + " g/cm³";
-}
-
-function setupCustomControls() {
-    document.getElementById("shapeSelector").onchange = updateCustomShape;
-    document.getElementById("colorPicker").oninput = updateCustomShape;
-    document.getElementById("widthSlider").oninput = updateCustomShape;
-    document.getElementById("heightSlider").oninput = updateCustomShape;
-    document.getElementById("depthSlider").oninput = updateCustomShape;
-    document.getElementById("radiusSlider").oninput = updateCustomShape;
-    document.getElementById("massSlider").oninput = updateCustomShape;
-    document.getElementById("materialSelector").onchange = updateCustomShape;
-}
-
-function animateCustom() {
-    requestAnimationFrame(animateCustom);
-    if (customShape) customShape.rotation.y += 0.01;
-    renderer.render(scene, camera);
-}
-
-function initCustomEditor() {
-    initCustomScene();
-    setupCustomControls();
-    updateCustomShape();
-    animateCustom();
-}
-
-if (window.location.pathname.includes("Custom-Page.html")) {
-    initCustomEditor();
-} 
-
-window.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("sendToTrampolineBtn");
-    if (!btn) return;
-
-    btn.addEventListener("click", () => {
-        const shapeType =
-            document.getElementById("shapeSelector")?.value || "cuboid";
-
-        const width  = Number(document.getElementById("widthSlider")?.value || 2);
-        const height = Number(document.getElementById("heightSlider")?.value || 2);
-        const depth  = Number(document.getElementById("depthSlider")?.value || 2);
-        const radius = Number(document.getElementById("radiusSlider")?.value || 1);
-
-        const colorHex =
-            document.getElementById("colorPicker")
-                ? document.getElementById("colorPicker").value
-                : "#ff5500";
-
-        const shapeData = {
-            type: shapeType,
-            dimensions: { width, height, depth, radius },
-            color: colorHex
-        };
-
-        localStorage.setItem(
-            "trampolineShape",
-            JSON.stringify(shapeData)
-        );
-
-        window.location.href = "Trampoline-Page.html";
+    window.addEventListener("resize", ()=>{
+        camera.aspect=window.innerWidth/window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
     });
-});
+}
+
+// --- Clear existing mesh ---
+function clearMesh(){
+    if(activeMesh) scene.remove(activeMesh);
+}
+
+// --- Create mesh for any shape ---
+function createMesh(type,width,height,depth,radius,color){
+    if(activeMesh) scene.remove(activeMesh);
+    let geo;
+    switch(type){
+        case "cuboid": geo=new THREE.BoxGeometry(width,height,depth); break;
+        case "sphere":
+        case "ellipsoid": geo=new THREE.SphereGeometry(radius,64,64); break;
+        case "pyramid": geo=new THREE.ConeGeometry(width,height,4); break;
+        case "cylinder": geo=new THREE.CylinderGeometry(radius,radius,height,32); break;
+        case "cone": geo=new THREE.ConeGeometry(radius,height,32); break;
+        case "torus": geo=new THREE.TorusGeometry(radius,depth,16,100); break;
+        case "capsule": geo=new THREE.CapsuleGeometry(radius,height,4,8); break;
+        case "ring": geo=new THREE.RingGeometry(radius,width,32); break;
+        case "octahedron": geo=new THREE.OctahedronGeometry(radius); break;
+        case "dodecahedron": geo=new THREE.DodecahedronGeometry(radius); break;
+        case "icosahedron": geo=new THREE.IcosahedronGeometry(radius); break;
+        default: console.error("Unknown shape type"); return;
+    }
+
+    const mat = new THREE.MeshStandardMaterial({color});
+    activeMesh = new THREE.Mesh(geo, mat);
+
+    if(type==="pyramid") activeMesh.rotation.y=Math.PI/4;
+    if(["cuboid","pyramid","capsule"].includes(type)){
+        geo.computeBoundingBox();
+        const center=new THREE.Vector3();
+        geo.boundingBox.getCenter(center);
+        activeMesh.position.sub(center);
+        if(type==="pyramid") activeMesh.position.y = height/2;
+    }
+
+    scene.add(activeMesh);
+
+    // Auto adjust camera
+    const maxDim=Math.max(width,height,depth,radius);
+    camera.position.z = Math.max(10,maxDim*2);
+}
+
+// --- Update mesh based on controls ---
+function updateMesh(){
+    const type = document.getElementById("shapeSelector").value;
+    const width = Number(document.getElementById("widthSlider")?.value || 1);
+    const height = Number(document.getElementById("heightSlider")?.value || 1);
+    const depth = Number(document.getElementById("depthSlider")?.value || 1);
+    const radius = Number(document.getElementById("radiusSlider")?.value || 1);
+    const mass = Number(document.getElementById("massSlider")?.value || 1);
+
+    // Material
+    const materialName = document.getElementById("materialSelector")?.value || "none";
+    const matProps = materials[materialName];
+    let color;
+    if(materialName==="none") color = parseInt(document.getElementById("colorPicker").value.slice(1),16);
+    else color=matProps.color;
+
+    createMesh(type,width,height,depth,radius,color);
+
+    // Update slider values
+    ["width","height","depth","radius","mass"].forEach(id=>{
+        const el=document.getElementById(id+"Value");
+        if(el){
+            const val=document.getElementById(id+"Slider")?.value;
+            if(val!==undefined) el.textContent=val+" cm";
+        }
+    });
+
+    // Compute volume
+    let volume=0;
+    switch(type){
+        case "cuboid": volume=width*height*depth; break;
+        case "sphere": case "ellipsoid": volume=(4/3)*Math.PI*radius**3; break;
+        case "pyramid": volume=(1/3)*width*width*height; break;
+        case "cylinder": volume=Math.PI*radius**2*height; break;
+        case "cone": volume=(1/3)*Math.PI*radius**2*height; break;
+        case "torus": volume=2*Math.PI**2*radius*depth**2; break;
+        case "capsule": volume=Math.PI*radius**2*((4/3)*radius+height); break;
+        case "ring": volume=Math.PI*(width**2-radius**2); break;
+        case "octahedron": volume=(Math.sqrt(2)/3)*radius**3; break;
+        case "dodecahedron": volume=(15+7*Math.sqrt(5))/4*radius**3; break;
+        case "icosahedron": volume=(5*(3+Math.sqrt(5))/12)*radius**3; break;
+    }
+
+    const density = materialName==="none" ? (volume?mass/volume:0) : matProps.density;
+
+    const volEl=document.getElementById("volumeSliderValue");
+    if(volEl) volEl.textContent=volume.toFixed(2)+" cm³";
+    const massEl=document.getElementById("massSliderValue");
+    if(massEl) massEl.textContent=mass.toFixed(2)+" g";
+    const densEl=document.getElementById("densityOutput");
+    if(densEl) densEl.textContent=density.toFixed(2)+" g/cm³";
+}
+
+// --- Show/Hide sliders ---
+function updateSlidersForShape(type){
+    const allSliders=["widthSlider","heightSlider","depthSlider","radiusSlider","massSlider"];
+    const visible = shapeSliders[type] || [];
+    allSliders.forEach(id=>{
+        const el=document.getElementById(id);
+        if(!el) return;
+        const label=el.closest("label")||el.parentElement;
+        label.style.display = visible.includes(id) ? "block" : "none";
+    });
+}
+
+// --- Attach events ---
+function setupControls(){
+    ["shapeSelector","widthSlider","heightSlider","depthSlider","radiusSlider","massSlider","colorPicker","materialSelector"].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el) el.addEventListener("input",updateMesh);
+    });
+
+    const shapeSel=document.getElementById("shapeSelector");
+    if(shapeSel) shapeSel.addEventListener("change",()=>{updateSlidersForShape(shapeSel.value); updateMesh();});
+
+    // Trampoline button
+    const btn=document.getElementById("sendToTrampolineBtn");
+    if(btn) btn.addEventListener("click",()=>{
+        const type=document.getElementById("shapeSelector")?.value || "cuboid";
+        const width=Number(document.getElementById("widthSlider")?.value||1);
+        const height=Number(document.getElementById("heightSlider")?.value||1);
+        const depth=Number(document.getElementById("depthSlider")?.value||1);
+        const radius=Number(document.getElementById("radiusSlider")?.value||1);
+        const color=document.getElementById("colorPicker")?.value || "#ff5500";
+
+        localStorage.setItem("trampolineShape",JSON.stringify({
+            type,dimensions:{width,height,depth,radius},color
+        }));
+        window.location.href="Trampoline-Page.html";
+    });
+}
+
+// --- Animation ---
+function animate(){
+    requestAnimationFrame(animate);
+    if(activeMesh) activeMesh.rotation.y+=0.01;
+    renderer.render(scene,camera);
+}
+
+// --- Initialize editor ---
+function initEditor(){
+    initScene();
+    setupControls();
+    const type=document.getElementById("shapeSelector")?.value || "cuboid";
+    updateSlidersForShape(type);
+    updateMesh();
+    animate();
+}
+
+// Auto-init for custom page
+if(window.location.pathname.includes("Custom-Page.html")){
+    window.addEventListener("DOMContentLoaded",initEditor);
+}
+
 
