@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+  <button id="backBtn">← Back</button>
   <h1>Custom Shape Editor</h1>
 
   <div id="controls">
@@ -27,6 +27,7 @@
         <option value="icosahedron">Icosahedron</option>
       </select>
     </label>
+
 
     <label>Width: <span id="widthValue">1 cm</span>
       <input id="widthSlider" type="range" min="1" max="5" value="1">
@@ -76,12 +77,23 @@
         saveShape();
         location.href = "Float-Page.html";
       });
-
+      
       document.getElementById("sendToTrampolineBtn").addEventListener("click", () => {
         saveShape();
         location.href = "Trampoline-Page.html";
       });
     });
+
+          const backBtn = document.getElementById("backBtn");
+      if (backBtn) {
+        backBtn.addEventListener("click", () => {
+          if (window.history.length > 1) {
+            window.history.back(); // normal back
+          } else {
+            window.location.href = "index.html"; // fallback if no history
+          }
+        });
+      }
   </script>
 
 </body>

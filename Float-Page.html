@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+  
 <head>
+  <button id="backBtn">← Back</button>
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const backBtn = document.getElementById("backBtn");
+    backBtn.addEventListener("click", () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+  });
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buoyancy Sim</title>
@@ -24,6 +39,8 @@
     color:#333;
     z-index:10;
   }
+
+  
 </style>
 </head>
 <body>
@@ -36,7 +53,3 @@
 <script src="Float-Page.js" defer></script>
 </body>
 </html>
-
-
-
-

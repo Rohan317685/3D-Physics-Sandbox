@@ -219,3 +219,21 @@ window.addEventListener("DOMContentLoaded", () => {
         location.href = "Trampoline-Page.html";
     });
 });
+
+window.addEventListener("DOMContentLoaded", () => {
+    // --- existing code for other buttons ---
+
+    // Back button (works on any page)
+    const backBtn = document.getElementById("backBtn");
+    if (backBtn) {
+        backBtn.addEventListener("click", () => {
+            // Go back if history exists
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // fallback: go to a default page
+                window.location.href = "index.html";
+            }
+        });
+    }
+});

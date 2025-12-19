@@ -5,6 +5,20 @@
         <title>Trampoline Simulator</title>
         <link rel="stylesheet" href="style.css">
     </head>
+    <button id="backBtn">← Back</button>
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const backBtn = document.getElementById("backBtn");
+    backBtn.addEventListener("click", () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+  });
+</script>
+
 <body>
     
     
@@ -36,5 +50,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
     <script src="trampoline.js"></script>
+    
+    
 </body>
 </html>
