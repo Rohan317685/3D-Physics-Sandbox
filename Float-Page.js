@@ -1,12 +1,12 @@
 let scene, camera, renderer;
 let shapeMesh, poolPlane;
 
-const WATER_DENSITY = 1000; // kg/m³
+const WATER_DENSITY = 1000; 
 
 init();
 animate();
 
-/* -------------------- INIT -------------------- */
+
 function init() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xeef6ff);
@@ -24,13 +24,13 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.getElementById("canvas-container").appendChild(renderer.domElement);
 
-  // Lights
+
   scene.add(new THREE.AmbientLight(0xffffff, 0.6));
   const sun = new THREE.DirectionalLight(0xffffff, 0.8);
   sun.position.set(10, 20, 10);
   scene.add(sun);
 
-  // Water
+ 
   const waterGeo = new THREE.PlaneGeometry(30, 12);
   const waterMat = new THREE.MeshPhongMaterial({
     color: 0x1e90ff,
@@ -46,7 +46,7 @@ function init() {
   window.addEventListener("resize", onResize);
 }
 
-/* -------------------- LOAD SHAPE -------------------- */
+
 function loadShape() {
   let data = JSON.parse(localStorage.getItem("trampolineShape"));
 
@@ -54,7 +54,7 @@ function loadShape() {
     data = {
       type: "sphere",
       dimensions: { radius: 1 },
-      density: 600, // g/m³
+      density: 600, 
       color: 0xff5500
     };
   }
@@ -126,16 +126,15 @@ function loadShape() {
 
   shapeMesh = new THREE.Mesh(geometry, material);
 
-  // Scale ellipsoid correctly
   if (data.type === "ellipsoid") {
     shapeMesh.scale.set(d.width, d.height, d.depth);
   }
 
   scene.add(shapeMesh);
 
-  // Physics
+
   shapeMesh.volume = calculateVolume(data);
-  shapeMesh.density = data.density / 1000; // g/m³ → kg/m³
+  shapeMesh.density = data.density / 1000; 
   shapeMesh.mass = shapeMesh.volume * shapeMesh.density;
 
   shapeMesh.position.y = 5;
@@ -145,15 +144,14 @@ function loadShape() {
   shapeMesh = new THREE.Mesh(geometry, material);
   scene.add(shapeMesh);
 
-  // --- PHYSICS PROPERTIES ---
-  shapeMesh.volume = calculateVolume(data);          // m³
-  shapeMesh.density = data.density / 1000;           // g/m³ → kg/m³
+  
+  shapeMesh.volume = calculateVolume(data);          
+  shapeMesh.density = data.density / 1000;           
   shapeMesh.mass = shapeMesh.volume * shapeMesh.density;
 
   shapeMesh.position.y = 5;
 
 
-/* -------------------- VOLUME -------------------- */
 function calculateVolume(shape) {
   const d = shape.dimensions;
 
@@ -172,25 +170,25 @@ function calculateVolume(shape) {
   }
 }
 
-/* -------------------- ANIMATION -------------------- */
+
 function animate() {
   requestAnimationFrame(animate);
 
   if (shapeMesh) {
-    // Fraction submerged based on density ratio
+    
     const submergedFraction = Math.min(
       shapeMesh.density / WATER_DENSITY,
       1
     );
 
-    // Target height (water surface at y = 0)
+    
     const height = getShapeHeight();
     const targetY = (0.5 - submergedFraction) * height;
 
-    // Smooth motion
+
     shapeMesh.position.y += (targetY - shapeMesh.position.y) * 0.05;
 
-    // Depth display
+   
     document.getElementById("depthDisplay").textContent =
       `Depth: ${Math.max(0, -shapeMesh.position.y).toFixed(2)} m`;
   }
@@ -198,7 +196,7 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-/* -------------------- HELPERS -------------------- */
+
 function getShapeHeight() {
   const box = new THREE.Box3().setFromObject(shapeMesh);
   return box.max.y - box.min.y;

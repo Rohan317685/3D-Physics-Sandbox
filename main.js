@@ -1,8 +1,8 @@
 let scene, camera, renderer;
 let activeMesh = null;
-const DEFAULT_DENSITY = 600; // g/cm³ for Float page
+const DEFAULT_DENSITY = 600; 
 
-/* ================== BASE SCENE ================== */
+
 function initBaseScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
@@ -28,7 +28,6 @@ function initBaseScene() {
     scene.add(dir);
 }
 
-/* ================== HELPERS ================== */
 function clearMesh() {
     if (activeMesh) scene.remove(activeMesh);
 }
@@ -48,7 +47,7 @@ function saveShape(shapeType, dims) {
     localStorage.setItem("trampolineShape", JSON.stringify(shapeData));
 }
 
-/* ================== SPHERE ================== */
+
 function updateSphere() {
     const r = Number(document.getElementById("widthSlider").value);
     document.getElementById("widthValue").textContent = r + " cm";
@@ -79,7 +78,7 @@ function initSphereEditor() {
     animate();
 }
 
-/* ================== CUBOID ================== */
+
 function updateCuboid() {
     const w = Number(document.getElementById("widthSlider").value);
     const h = Number(document.getElementById("heightSlider").value);
@@ -117,7 +116,7 @@ function initCuboidEditor() {
     animate();
 }
 
-/* ================== PYRAMID ================== */
+
 function updatePyramid() {
     const w = Number(document.getElementById("widthSlider").value);
     const h = Number(document.getElementById("heightSlider").value);
@@ -156,14 +155,14 @@ function initPyramidEditor() {
     animate();
 }
 
-/* ================== ANIMATION ================== */
+
 function animate() {
     requestAnimationFrame(animate);
     if (activeMesh) activeMesh.rotation.y += 0.01;
     renderer.render(scene, camera);
 }
 
-/* ================== INIT ================== */
+
 window.addEventListener("DOMContentLoaded", () => {
     const page = location.pathname.split("/").pop();
 
@@ -171,7 +170,7 @@ window.addEventListener("DOMContentLoaded", () => {
     else if (page === "Cuboid-Page.html") initCuboidEditor();
     else if (page === "Pyramid-Page.html") initPyramidEditor();
 
-    // Floating simulator button
+    
     document.getElementById("goToFloat")?.addEventListener("click", () => {
         let dims, type = "";
         if (page === "Sphere-Page.html") {
@@ -195,7 +194,7 @@ window.addEventListener("DOMContentLoaded", () => {
         location.href = "Float-Page.html";
     });
 
-    // Trampoline simulator button
+    
     document.getElementById("sendToTrampolineBtn")?.addEventListener("click", () => {
         let dims, type = "";
         if (page === "Sphere-Page.html") {
@@ -221,17 +220,17 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-    // --- existing code for other buttons ---
+    
 
-    // Back button (works on any page)
+    
     const backBtn = document.getElementById("backBtn");
     if (backBtn) {
         backBtn.addEventListener("click", () => {
-            // Go back if history exists
+            
             if (window.history.length > 1) {
                 window.history.back();
             } else {
-                // fallback: go to a default page
+                
                 window.location.href = "index.html";
             }
         });
