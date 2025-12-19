@@ -1,6 +1,9 @@
 let scene, camera, renderer;
 let activeMesh = null;
 
+// Global density variable (updated live)
+let currentDensity = 0;
+
 // Materials / densities
 const materials = {
     none: { color: null, density: 0.6 },
@@ -38,7 +41,7 @@ const shapeSliders = {
     icosahedron: ["radiusSlider","massSlider"]
 };
 
-// --- Base Scene -uoyfu
+// --- Base Scene ---
 function initScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
@@ -102,7 +105,6 @@ function createMesh(type,width,height,depth,radius,color){
 
     scene.add(activeMesh);
 
-    // Auto adjust camera
     const maxDim=Math.max(width,height,depth,radius);
     camera.position.z = Math.max(10,maxDim*2);
 }
@@ -116,7 +118,6 @@ function updateMesh(){
     const radius = Number(document.getElementById("radiusSlider")?.value || 1);
     const mass = Number(document.getElementById("massSlider")?.value || 1);
 
-    // Material
     const materialName = document.getElementById("materialSelector")?.value || "none";
     const matProps = materials[materialName];
     let color;
@@ -125,12 +126,14 @@ function updateMesh(){
 
     createMesh(type,width,height,depth,radius,color);
 
-    // Update slider values
+    // Update slider values including mass
     ["width","height","depth","radius","mass"].forEach(id=>{
         const el=document.getElementById(id+"Value");
         if(el){
             const val=document.getElementById(id+"Slider")?.value;
-            if(val!==undefined) el.textContent=val+" cm";
+            if(val!==undefined){
+                el.textContent = id==="mass" ? val+" g" : val+" cm";
+            }
         }
     });
 
@@ -150,14 +153,19 @@ function updateMesh(){
         case "icosahedron": volume=(5*(3+Math.sqrt(5))/12)*radius**3; break;
     }
 
-    const density = materialName==="none" ? (volume?mass/volume:0) : matProps.density;
+    // Update density live
+    currentDensity = materialName==="none" ? (volume ? mass/volume : 0) : matProps.density;
 
+    // Update density display
+    const densEl=document.getElementById("densityOutput");
+    if(densEl) densEl.style.color="#000"; // ensure visible
+    if(densEl) densEl.textContent=currentDensity.toFixed(2)+" g/cm³";
+
+    // Update volume and mass displays
     const volEl=document.getElementById("volumeSliderValue");
     if(volEl) volEl.textContent=volume.toFixed(2)+" cm³";
     const massEl=document.getElementById("massSliderValue");
     if(massEl) massEl.textContent=mass.toFixed(2)+" g";
-    const densEl=document.getElementById("densityOutput");
-    if(densEl) densEl.textContent=density.toFixed(2)+" g/cm³";
 }
 
 // --- Show/Hide sliders ---
@@ -182,20 +190,29 @@ function setupControls(){
     const shapeSel=document.getElementById("shapeSelector");
     if(shapeSel) shapeSel.addEventListener("change",()=>{updateSlidersForShape(shapeSel.value); updateMesh();});
 
-    // Trampoline button
-    const btn=document.getElementById("sendToTrampolineBtn");
-    if(btn) btn.addEventListener("click",()=>{
-        const type=document.getElementById("shapeSelector")?.value || "cuboid";
-        const width=Number(document.getElementById("widthSlider")?.value||1);
-        const height=Number(document.getElementById("heightSlider")?.value||1);
-        const depth=Number(document.getElementById("depthSlider")?.value||1);
-        const radius=Number(document.getElementById("radiusSlider")?.value||1);
-        const color=document.getElementById("colorPicker")?.value || "#ff5500";
+    // Floating/Trampoline buttons save mass and density
+    ["sendToTrampolineBtn","goToFloat"].forEach(btnId=>{
+        const btn=document.getElementById(btnId);
+        if(btn) btn.addEventListener("click",()=>{
+            const type=document.getElementById("shapeSelector")?.value || "cuboid";
+            const width=Number(document.getElementById("widthSlider")?.value||1);
+            const height=Number(document.getElementById("heightSlider")?.value||1);
+            const depth=Number(document.getElementById("depthSlider")?.value||1);
+            const radius=Number(document.getElementById("radiusSlider")?.value||1);
+            const mass=Number(document.getElementById("massSlider")?.value||1);
+            const color=document.getElementById("colorPicker")?.value || "#ff5500";
 
-        localStorage.setItem("trampolineShape",JSON.stringify({
-            type,dimensions:{width,height,depth,radius},color
-        }));
-        window.location.href="Trampoline-Page.html";
+            localStorage.setItem("trampolineShape",JSON.stringify({
+                type,
+                dimensions:{width,height,depth,radius},
+                color,
+                mass,
+                density: currentDensity
+            }));
+
+            if(btnId==="sendToTrampolineBtn") window.location.href="Trampoline-Page.html";
+            else window.location.href="Float-Page.html";
+        });
     });
 }
 
