@@ -38,7 +38,7 @@ const shapeSliders = {
     icosahedron: ["radiusSlider","massSlider"]
 };
 
-// --- Base Scene ---
+// --- Base Scene -uoyfu
 function initScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
