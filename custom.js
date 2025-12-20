@@ -1,10 +1,10 @@
 let scene, camera, renderer;
 let activeMesh = null;
 
-// Global density variable (updated live)
+
 let currentDensity = 0;
 
-// Materials / densities
+
 const materials = {
     none: { color: null, density: 0.6 },
     wood: { color: 0x8B4513, density: 0.7 },
@@ -25,7 +25,6 @@ const materials = {
     titanium: { color: 0x888888, density: 4.5, metalness: 0.9, roughness: 0.2 }
 };
 
-// Slider IDs per shape
 const shapeSliders = {
     cuboid: ["widthSlider","heightSlider","depthSlider","massSlider"],
     sphere: ["radiusSlider","massSlider"],
@@ -41,7 +40,7 @@ const shapeSliders = {
     icosahedron: ["radiusSlider","massSlider"]
 };
 
-// --- Base Scene ---
+
 function initScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
@@ -66,12 +65,12 @@ function initScene() {
     });
 }
 
-// --- Clear existing mesh ---
+
 function clearMesh(){
     if(activeMesh) scene.remove(activeMesh);
 }
 
-// --- Create mesh for any shape ---
+
 function createMesh(type,width,height,depth,radius,color){
     if(activeMesh) scene.remove(activeMesh);
     let geo;
@@ -109,7 +108,7 @@ function createMesh(type,width,height,depth,radius,color){
     camera.position.z = Math.max(10,maxDim*2);
 }
 
-// --- Update mesh based on controls ---
+
 function updateMesh(){
     const type = document.getElementById("shapeSelector").value;
     const width = Number(document.getElementById("widthSlider")?.value || 1);
@@ -126,7 +125,7 @@ function updateMesh(){
 
     createMesh(type,width,height,depth,radius,color);
 
-    // Update slider values including mass
+
     ["width","height","depth","radius","mass"].forEach(id=>{
         const el=document.getElementById(id+"Value");
         if(el){
@@ -137,7 +136,7 @@ function updateMesh(){
         }
     });
 
-    // Compute volume
+
     let volume=0;
     switch(type){
         case "cuboid": volume=width*height*depth; break;
@@ -153,22 +152,22 @@ function updateMesh(){
         case "icosahedron": volume=(5*(3+Math.sqrt(5))/12)*radius**3; break;
     }
 
-    // Update density live
+
     currentDensity = materialName==="none" ? (volume ? mass/volume : 0) : matProps.density;
 
-    // Update density display
+   
     const densEl=document.getElementById("densityOutput");
-    if(densEl) densEl.style.color="#000"; // ensure visible
+    if(densEl) densEl.style.color="#000"; 
     if(densEl) densEl.textContent=currentDensity.toFixed(2)+" g/cm³";
 
-    // Update volume and mass displays
+  
     const volEl=document.getElementById("volumeSliderValue");
     if(volEl) volEl.textContent=volume.toFixed(2)+" cm³";
     const massEl=document.getElementById("massSliderValue");
     if(massEl) massEl.textContent=mass.toFixed(2)+" g";
 }
 
-// --- Show/Hide sliders ---
+
 function updateSlidersForShape(type){
     const allSliders=["widthSlider","heightSlider","depthSlider","radiusSlider","massSlider"];
     const visible = shapeSliders[type] || [];
@@ -180,7 +179,7 @@ function updateSlidersForShape(type){
     });
 }
 
-// --- Attach events ---
+
 function setupControls(){
     ["shapeSelector","widthSlider","heightSlider","depthSlider","radiusSlider","massSlider","colorPicker","materialSelector"].forEach(id=>{
         const el=document.getElementById(id);
@@ -190,7 +189,7 @@ function setupControls(){
     const shapeSel=document.getElementById("shapeSelector");
     if(shapeSel) shapeSel.addEventListener("change",()=>{updateSlidersForShape(shapeSel.value); updateMesh();});
 
-    // Floating/Trampoline buttons save mass and density
+
     ["sendToTrampolineBtn","goToFloat"].forEach(btnId=>{
         const btn=document.getElementById(btnId);
         if(btn) btn.addEventListener("click",()=>{
@@ -216,14 +215,14 @@ function setupControls(){
     });
 }
 
-// --- Animation ---
+
 function animate(){
     requestAnimationFrame(animate);
     if(activeMesh) activeMesh.rotation.y+=0.01;
     renderer.render(scene,camera);
 }
 
-// --- Initialize editor ---
+
 function initEditor(){
     initScene();
     setupControls();
@@ -233,7 +232,7 @@ function initEditor(){
     animate();
 }
 
-// Auto-init for custom page
+
 if(window.location.pathname.includes("Custom-Page.html")){
     window.addEventListener("DOMContentLoaded",initEditor);
 }

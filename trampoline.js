@@ -254,5 +254,3 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
-

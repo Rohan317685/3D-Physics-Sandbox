@@ -25,7 +25,7 @@
       z-index:10;
     }
 
-
+    
     #backBtn {
       position: fixed;
       top: 10px;
@@ -51,6 +51,13 @@
   <button id="backBtn">← Back</button>
 
   <div id="canvas-container">
+    <div id="densityControl" style="position:absolute; top:80px; left:10px; z-index:10; background:#fff; padding:5px; border-radius:5px;">
+  <label>
+    Density: <span id="densityValue">1</span> g/cm³
+    <input type="range" id="densitySlider" min="0.01" max="1000" value="1" step="0.01" style="width:200px;">
+  </label>
+</div>
+
     <div id="heading">Buoyancy Sim</div>
     <div id="depthDisplay">Depth: 0.00 m</div>
   </div>
