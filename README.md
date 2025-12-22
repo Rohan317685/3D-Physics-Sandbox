@@ -2,6 +2,9 @@
 This is my project submitting for #axiom.
 This features a 3d sandbox which took me approximately 33 hours.
 
+It is very simple to navigate and use there are sliders dislayed and color pickers displayed to on the side of the page
+I like to call them "dashboards".
+
 I was inspired by a game I used to play when i was 6 it was also a 3d phyics sandbox it was quite old pretty sure its like 13 years old today
 but i learned a lot from it and thats the inspiration I used.
 
@@ -17,6 +20,8 @@ There are 2 simulators the flaot page which shows whether your object sinks or f
 the trampoline simulator it has a green disc where the shape collides and bounces of and its calculated assuming no wind etc so it is not pausible in real
 life because there will always be external factors affecting but it is supposed to simulate what happoens in a closed of controlled environment.
 
-This is also my first type using css, javascript and html i had to go through a ton of youtube tutorials but worth it definitely and I learned a lot about pwm 
+This is also my first time using css, javascript and html i had to go through a ton of youtube tutorials but worth it definitely and I learned a lot about pwm 
 how difficult coding is and that a lot of websites use javascript and that new software helps users withy no coding experience design a website its amazing what
 tech can do!
+
+I coded this on VS code and used three.js and other add ons for the 3d phyics and the shapes.
